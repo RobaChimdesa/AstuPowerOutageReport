@@ -3,11 +3,11 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Homepage from './pages/homepage';
 import Signup from './pages/signup';
-
 import Signin from './pages/signin';
 import AdminLogin from './pages/AdminLogin';
 import About from './pages/About';
 import Dashboard from './pages/Dashboard';
+import TeamLeaderDashboard from './pages/MaintenanceTeamLeaderdashboard';
 
 // Placeholder components with responsive styling
 const OutageReport = () => (
@@ -78,6 +78,7 @@ const App = () => {
           <Route path="/status" element={<OutageStatus />} />
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/team-leader-dashboard" element={<TeamLeaderDashboard />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/profile" element={<UserProfile />} />

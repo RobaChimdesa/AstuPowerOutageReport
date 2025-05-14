@@ -31,8 +31,18 @@ const AdminLogin = () => {
       return;
     }
     console.log('Admin Login Data:', formData);
-    alert('Admin login successful!'); // Placeholder for API call
-    navigate('/dashboard'); // Redirect to dashboard
+    // Mock role check (replace with backend API call)
+    const mockUser = {
+      email: formData.email,
+      role: 'Administrator',
+      roleSpecification: formData.email.includes('maintenance') ? 'Maintenance Team' : 'Facility Manager',
+    };
+    alert('Admin login successful!');
+    if (mockUser.roleSpecification === 'Maintenance Team') {
+      navigate('/team-leader-dashboard');
+    } else {
+      navigate('/dashboard');
+    }
   };
 
   return (

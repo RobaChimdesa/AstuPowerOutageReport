@@ -38,10 +38,10 @@ const Homepage = () => {
             <Link to="/signin" className="text-white hover:text-indigo-200 transition text-sm lg:text-base">
               Signin
             </Link>
-            <Link to="/report" className="text-white hover:text-indigo-200 transition text-sm lg:text-base">
+            <Link to="/signin" className="text-white hover:text-indigo-200 transition text-sm lg:text-base">
               Report Outage
             </Link>
-            <Link to="/status" className="text-white hover:text-indigo-200 transition text-sm lg:text-base">
+            <Link to="/signin" className="text-white hover:text-indigo-200 transition text-sm lg:text-base">
               Track Status
             </Link>
             <Link to="/about" className="text-white hover:text-indigo-200 transition text-sm lg:text-base">
@@ -67,7 +67,7 @@ const Homepage = () => {
               className="text-white hover:text-indigo-200 transition text-base py-2"
               onClick={toggleMenu}
             >
-              Login
+              Signin
             </Link>
             <Link
               to="/report"
@@ -114,13 +114,13 @@ const Homepage = () => {
             </p>
             <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
               <Link
-                to="/report"
+                to="/signup"
                 className="bg-indigo-600 text-white py-2 px-4 sm:py-3 sm:px-6 rounded-md text-base sm:text-lg font-semibold hover:bg-indigo-700 transition"
               >
                 Report an Outage
               </Link>
               <Link
-                to="/status"
+                to="/signup"
                 className="bg-gray-600 text-white py-2 px-4 sm:py-3 sm:px-6 rounded-md text-base sm:text-lg font-semibold hover:bg-gray-700 transition"
               >
                 Track Outage Status
