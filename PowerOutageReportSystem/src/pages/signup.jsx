@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-// import Footer from './Footer';
 import Footer from './footer';
+
 const Signup = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -38,16 +38,34 @@ const Signup = () => {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-    console.log('Signup Data:', formData);
-    alert('Signup successful!'); // Placeholder for API call
-    navigate('/login');
+
+    try {
+      const response = await fetch('http://localhost:8000/api/signup/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Signup successful:', data);
+        alert('Signup successful! Please log in.');
+        navigate('/login');
+      } else {
+        const errorData = await response.json();
+        console.error('Signup error:', errorData);
+        setErrors({ ...errorData, general: 'Signup failed. Check the errors below.' });
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+      setErrors({ general: 'Network error. Please check your connection and try again.' });
+    }
   };
 
   return (
@@ -58,7 +76,7 @@ const Signup = () => {
             Sign Up
           </h2>
           <div className="space-y-8">
-            {/* Role Selection */}
+            {errors.general && <p className="text-base text-red-600">{errors.general}</p>}
             <div>
               <label className="block text-base sm:text-lg font-semibold text-gray-700">Role</label>
               <select
@@ -74,8 +92,6 @@ const Signup = () => {
               </select>
               {errors.role && <p className="mt-2 text-base text-red-600">{errors.role}</p>}
             </div>
-
-            {/* Name */}
             <div>
               <label className="block text-base sm:text-lg font-semibold text-gray-700">Full Name</label>
               <input
@@ -88,8 +104,6 @@ const Signup = () => {
               />
               {errors.name && <p className="mt-2 text-base text-red-600">{errors.name}</p>}
             </div>
-
-            {/* Email */}
             <div>
               <label className="block text-base sm:text-lg font-semibold text-gray-700">Email</label>
               <input
@@ -102,8 +116,6 @@ const Signup = () => {
               />
               {errors.email && <p className="mt-2 text-base text-red-600">{errors.email}</p>}
             </div>
-
-            {/* Password */}
             <div>
               <label className="block text-base sm:text-lg font-semibold text-gray-700">Password</label>
               <input
@@ -116,8 +128,6 @@ const Signup = () => {
               />
               {errors.password && <p className="mt-2 text-base text-red-600">{errors.password}</p>}
             </div>
-
-            {/* Confirm Password */}
             <div>
               <label className="block text-base sm:text-lg font-semibold text-gray-700">Confirm Password</label>
               <input
@@ -130,8 +140,6 @@ const Signup = () => {
               />
               {errors.confirmPassword && <p className="mt-2 text-base text-red-600">{errors.confirmPassword}</p>}
             </div>
-
-            {/* Role-Specific Fields */}
             {['Student', 'Faculty', 'Staff', 'Administrator'].includes(formData.role) && (
               <div>
                 <label className="block text-base sm:text-lg font-semibold text-gray-700">
@@ -148,7 +156,6 @@ const Signup = () => {
                 {errors.id && <p className="mt-2 text-base text-red-600">{errors.id}</p>}
               </div>
             )}
-
             {['Student', 'Faculty'].includes(formData.role) && (
               <div>
                 <label className="block text-base sm:text-lg font-semibold text-gray-700">Department</label>
@@ -167,7 +174,6 @@ const Signup = () => {
                 {errors.department && <p className="mt-2 text-base text-red-600">{errors.department}</p>}
               </div>
             )}
-
             {formData.role === 'Staff' && (
               <div>
                 <label className="block text-base sm:text-lg font-semibold text-gray-700">Office</label>
@@ -182,7 +188,6 @@ const Signup = () => {
                 {errors.office && <p className="mt-2 text-base text-red-600">{errors.office}</p>}
               </div>
             )}
-
             {formData.role === 'Administrator' && (
               <div>
                 <label className="block text-base sm:text-lg font-semibold text-gray-700">Role Specification</label>
@@ -200,16 +205,12 @@ const Signup = () => {
                 {errors.roleSpecification && <p className="mt-2 text-base text-red-600">{errors.roleSpecification}</p>}
               </div>
             )}
-
-            {/* Submit Button */}
             <button
               onClick={handleSubmit}
               className="w-full bg-indigo-600 text-white py-3 sm:py-4 px-4 rounded-md text-lg sm:text-xl font-bold hover:bg-indigo-700 transition"
             >
               Sign Up
             </button>
-
-            {/* Navigation Links */}
             <div className="text-center text-base sm:text-lg text-gray-600 space-y-2">
               <p>
                 Already have an account?{' '}

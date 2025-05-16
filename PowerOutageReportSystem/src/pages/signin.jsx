@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Footer from './footer';
@@ -23,16 +22,36 @@ const Signin = () => {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-    console.log('Signin Data:', formData);
-    alert('Signin successful!'); // Placeholder for API call
-    navigate('/dashboard'); // Redirect to dashboard
+
+    try {
+      const response = await fetch('http://localhost:8000/api/login/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Signin successful:', data);
+        localStorage.setItem('access_token', data.access);
+        localStorage.setItem('refresh_token', data.refresh);
+        alert('Signin successful!');
+        navigate('/dashboard');
+      } else {
+        const errorData = await response.json();
+        console.error('Signin error:', errorData);
+        setErrors({ ...errorData, general: errorData.error || 'Signin failed. Check your credentials.' });
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+      setErrors({ general: 'Network error. Please check your connection and try again.' });
+    }
   };
 
   return (
@@ -43,7 +62,7 @@ const Signin = () => {
             Sign In
           </h2>
           <div className="space-y-8">
-            {/* Email */}
+            {errors.general && <p className="text-base text-red-600">{errors.general}</p>}
             <div>
               <label className="block text-base sm:text-lg font-semibold text-gray-700">Email</label>
               <input
@@ -56,8 +75,6 @@ const Signin = () => {
               />
               {errors.email && <p className="mt-2 text-base text-red-600">{errors.email}</p>}
             </div>
-
-            {/* Password */}
             <div>
               <label className="block text-base sm:text-lg font-semibold text-gray-700">Password</label>
               <input
@@ -70,16 +87,12 @@ const Signin = () => {
               />
               {errors.password && <p className="mt-2 text-base text-red-600">{errors.password}</p>}
             </div>
-
-            {/* Submit Button */}
             <button
               onClick={handleSubmit}
               className="w-full bg-indigo-600 text-white py-3 sm:py-4 px-4 rounded-md text-lg sm:text-xl font-bold hover:bg-indigo-700 transition"
             >
               Sign In
             </button>
-
-            {/* Navigation Links */}
             <div className="text-center text-base sm:text-lg text-gray-600 space-y-2">
               <p>
                 Don't have an account?{' '}
@@ -90,10 +103,11 @@ const Signin = () => {
               <p>
                 <Link to="/" className="text-indigo-600 hover:underline">
                   Back to Home
-                </Link>
-              </p>
+                  </Link>
+
+                </p>
+              </div>
             </div>
-          </div>
         </div>
       </main>
       <Footer />
